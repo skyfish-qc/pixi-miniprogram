@@ -42,6 +42,7 @@ export function createPIXI(canvas,stageWidth) {
 		return img;
 	}
 	window.WebGLRenderingContext = canvas.getContext2('webgl');
+	const WebGLRenderingContext = window.WebGLRenderingContext;
 	// eslint-disable-next-line
 	const atob = (a) => {
 		return _atob(a)

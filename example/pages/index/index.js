@@ -50,6 +50,7 @@ Page({
 					explosion.gotoAndPlay(Math.random() * 27);
 					stage.addChild(explosion);
 				}
+				console.log(res.spineboypro)
 				var spineBoyPro = new PIXI.spine.Spine(res.spineboypro.spineData);
 				spineBoyPro.x = stageWidth / 2;
 				spineBoyPro.y = 1200;
