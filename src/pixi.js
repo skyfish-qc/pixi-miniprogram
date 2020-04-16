@@ -38129,7 +38129,6 @@ var PIXI = (function (exports) {
 	SpritesheetLoader.use = function use (resource, next)
 	{
 	    var imageResourceName = (resource.name) + "_image";
-console.log("here1:",imageResourceName,resource.type)
 	    // skip if no data, its not json, it isn't spritesheet data, or the image resource already exists
 	    if (!resource.data
 	        || resource.type !== LoaderResource.TYPE.JSON
@@ -38137,7 +38136,6 @@ console.log("here1:",imageResourceName,resource.type)
 	        || this.resources[imageResourceName]
 	    )
 	    {
-			console.log("here4")
 	        next();
 
 	        return;
@@ -38150,10 +38148,9 @@ console.log("here1:",imageResourceName,resource.type)
 	    };
 
 	    var resourcePath = SpritesheetLoader.getResourcePath(resource, this.baseUrl);
-console.log("here2:",resourcePath)
 	    // load the image for this sheet
 	    this.add(imageResourceName, resourcePath, loadOptions, function onImageLoad(res)
-	    {console.log("here3:",res)
+	    {
 	        if (res.error)
 	        {
 	            next(res.error);
