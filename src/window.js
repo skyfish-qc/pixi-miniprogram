@@ -1,8 +1,6 @@
 var DOMParser=require("./xmldom").DOMParser;
-import document from './document'
 const events = {}
 export default {
-	document:document,
     AudioContext: function() {},
     addEventListener: function() {},
     removeEventListener: function() {},

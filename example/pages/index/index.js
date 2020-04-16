@@ -15,7 +15,7 @@ Page({
 			installSpine(PIXI);//注入Spine库
 			var renderer = PIXI.autoDetectRenderer({width:stageWidth, height:stageHeight,'transparent':false,'view':canvas});//通过view把小程序的canvas传入
 			var stage = new PIXI.Container();
-			var bg = PIXI.Sprite.from("img/bg.jpg");
+			var bg = PIXI.Sprite.from("https://raw.githubusercontent.com/skyfish-qc/imgres/master/bg.jpg");
 			stage.addChild(bg);
 			bg.interactive=true;
 			bg.on("touchstart",function(e){
@@ -50,7 +50,6 @@ Page({
 					explosion.gotoAndPlay(Math.random() * 27);
 					stage.addChild(explosion);
 				}
-				console.log(res.spineboypro)
 				var spineBoyPro = new PIXI.spine.Spine(res.spineboypro.spineData);
 				spineBoyPro.x = stageWidth / 2;
 				spineBoyPro.y = 1200;
