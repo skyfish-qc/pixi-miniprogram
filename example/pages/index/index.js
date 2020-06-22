@@ -4,65 +4,94 @@ var installSpine = require("../../libs/pixi-spine")
 var PIXI = {};
 var app = getApp()
 Page({
+	onShareAppMessage:function(e){
+		return {
+			title: 'test2',
+			desc: '',
+			path:'/pages/index/index'
+		};
+	},
+	onShow:function(options){
+		wx.updateShareMenu({
+			withShareTicket:true
+		});
+		wx.showShareMenu({
+			withShareTicket: true
+		})
+		console.log(wx.getLaunchOptionsSync())
+	},
 	onLoad:function () {
-		var query = wx.createSelectorQuery()
-		query.select('#myCanvas').node().exec((res) => {
-			var stageWidth = 750;//canvas宽度，跟小程序wxss指定的一样大小
-			var stageHeight = 1220;//canvas高度，跟小程序wxss指定的一样大小
-			var canvas = res[0].node;
-			PIXI = createPIXI(canvas,stageWidth);//传入canvas，传入canvas宽度，用于计算触摸坐标比例适配触摸位置
-			unsafeEval(PIXI);//适配PIXI里面使用的eval函数
-			installSpine(PIXI);//注入Spine库
-			var renderer = PIXI.autoDetectRenderer({width:stageWidth, height:stageHeight,'transparent':false,'view':canvas});//通过view把小程序的canvas传入
-			var stage = new PIXI.Container();
-			var bg = PIXI.Sprite.from("img/bg.jpg");
-			stage.addChild(bg);
-			bg.interactive=true;
-			bg.on("touchstart",function(e){
-				console.log("touchstart",e.data.global)
-			});
-			bg.on("pointerup",function(e){
-				console.log("touchend")
-			});
-			//小程序不支持加载本地fnt，json文件，所以涉及到fnt，json文件的加载需要放到网络服务器
-			PIXI.Loader.shared
-				.add("https://raw.githubusercontent.com/skyfish-qc/imgres/master/blog.fnt")
-				.add("https://raw.githubusercontent.com/skyfish-qc/imgres/master/mc.json")
-				.add('spineboypro', "https://raw.githubusercontent.com/skyfish-qc/imgres/master/spineboy-pro.json").load(function(loader, res){
-				var btext = new PIXI.BitmapText('score:1234',{'font':{'name':'blog','size':'60px'},'tint':0xffff00});
-				btext.x = 40;
-				btext.y = 40;
-				stage.addChild(btext);
-				var explosionTextures = [];
-				for (var i = 0; i < 26; i++) {
-					var texture = PIXI.Texture.from('pic'+(i+1)+'.png');
-					explosionTextures.push(texture);
+		var query2d = wx.createSelectorQuery();
+		var query = wx.createSelectorQuery();
+		query2d.select('#canvas2d').fields({ node: true, size: true }).exec((res2d) => {
+			var canvas2d = res2d[0].node;
+			query.select('#myCanvas').node().exec((res) => {
+				var stageWidth = 750;//canvas宽度，跟小程序wxss指定的一样大小
+				var stageHeight = 1220;//canvas高度，跟小程序wxss指定的一样大小
+				var canvas = res[0].node;
+				PIXI = createPIXI(canvas,stageWidth,canvas2d);//传入canvas，传入canvas宽度，用于计算触摸坐标比例适配触摸位置
+				unsafeEval(PIXI);//适配PIXI里面使用的eval函数
+				installSpine(PIXI);//注入Spine库
+				var renderer = PIXI.autoDetectRenderer({width:stageWidth, height:stageHeight,'transparent':false,'view':canvas});//通过view把小程序的canvas传入
+				var stage = new PIXI.Container();
+				var bg = PIXI.Sprite.from("img/bg.jpg");
+				stage.addChild(bg);
+				var bg = PIXI.Sprite.from("img/bg.jpg");
+				stage.addChild(bg);
+				bg.interactive=true;
+				bg.on("touchstart",function(e){
+					console.log("touchstart",e.data.global)
+				});
+				bg.on("pointerup",function(e){
+					console.log("touchend")
+				});
+				//小程序不支持加载本地fnt，json文件，所以涉及到fnt，json文件的加载需要放到网络服务器
+				PIXI.Loader.shared
+					.add("https://raw.githubusercontent.com/skyfish-qc/imgres/master/blog.fnt")
+					.add("https://raw.githubusercontent.com/skyfish-qc/imgres/master/mc.json")
+					.add('spineboypro', "https://raw.githubusercontent.com/skyfish-qc/imgres/master/spineboy-pro.json").load(function(loader, res){
+					var btext = new PIXI.BitmapText('score:1234',{'font':{'name':'blog','size':'60px'},'tint':0xffff00});
+					btext.x = 40;
+					btext.y = 40;
+					stage.addChild(btext);
+					var explosionTextures = [];
+					for (var i = 0; i < 26; i++) {
+						var texture = PIXI.Texture.from('pic'+(i+1)+'.png');
+						explosionTextures.push(texture);
+					}
+
+					for (i = 0; i < 50; i++) {
+						var explosion = new PIXI.AnimatedSprite(explosionTextures);
+
+						explosion.x = Math.random() * stageWidth;
+						explosion.y = Math.random() * stageHeight;
+						explosion.anchor.set(0.5);
+						explosion.rotation = Math.random() * Math.PI;
+						explosion.scale.set(0.75 + Math.random() * 0.5);
+						explosion.gotoAndPlay(Math.random() * 27);
+						stage.addChild(explosion);
+					}
+					var spineBoyPro = new PIXI.spine.Spine(res.spineboypro.spineData);
+					spineBoyPro.x = stageWidth / 2;
+					spineBoyPro.y = 1200;
+
+					spineBoyPro.scale.set(0.5);
+					spineBoyPro.state.setAnimation(0, "hoverboard",true);
+					stage.addChild(spineBoyPro);
+
+					const graphics = new PIXI.Graphics();
+					graphics.beginFill(0xFF3300);
+					graphics.drawRect(50, 250, 100, 100);
+					graphics.endFill();
+					stage.addChild(graphics);
+					renderer.render(stage);
+				});
+				function animate() {
+					canvas.requestAnimationFrame(animate);
+					renderer.render(stage);
 				}
-
-				for (i = 0; i < 50; i++) {
-					var explosion = new PIXI.AnimatedSprite(explosionTextures);
-
-					explosion.x = Math.random() * stageWidth;
-					explosion.y = Math.random() * stageHeight;
-					explosion.anchor.set(0.5);
-					explosion.rotation = Math.random() * Math.PI;
-					explosion.scale.set(0.75 + Math.random() * 0.5);
-					explosion.gotoAndPlay(Math.random() * 27);
-					stage.addChild(explosion);
-				}
-				var spineBoyPro = new PIXI.spine.Spine(res.spineboypro.spineData);
-				spineBoyPro.x = stageWidth / 2;
-				spineBoyPro.y = 1200;
-
-				spineBoyPro.scale.set(0.5);
-				spineBoyPro.state.setAnimation(0, "hoverboard",true);
-				stage.addChild(spineBoyPro);
-			});
-			function animate() {
-				canvas.requestAnimationFrame(animate);
-				renderer.render(stage);
-			}
-			animate();
+				animate();
+			})
 		})
 	},
 	touchEvent:function(e){

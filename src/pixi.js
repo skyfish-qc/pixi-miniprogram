@@ -13211,7 +13211,9 @@ var PIXI = (function (exports) {
 	        {
 	            glTexture.width = width;
 	            glTexture.height = height;
-
+				if(source.type=='canvas') {
+					source = source.getContext('2d').getImageData(0, 0, source.width, source.height);
+				 }
 	            gl.texImage2D(baseTexture.target, 0, baseTexture.format, baseTexture.format, baseTexture.type, source);
 	        }
 
@@ -14707,6 +14709,7 @@ var PIXI = (function (exports) {
 	var CanvasResource = /*@__PURE__*/(function (BaseImageResource) {
 	    function CanvasResource () {
 	        BaseImageResource.apply(this, arguments);
+			this.type='canvas';
 	    }
 
 	    if ( BaseImageResource ) { CanvasResource.__proto__ = BaseImageResource; }
@@ -14723,7 +14726,7 @@ var PIXI = (function (exports) {
 	            return true;
 	        }
 
-	        return source instanceof HTMLCanvasElement;
+	        return source.type=="canvas";
 	    };
 
 	    return CanvasResource;
@@ -16616,10 +16619,11 @@ var PIXI = (function (exports) {
 
 	function createWhiteTexture()
 	{
-	    var canvas = document.createElement('canvas');
+	    var canvas = document.createElement('canvas2d');
 
 	    canvas.width = 16;
 	    canvas.height = 16;
+		canvas.type='canvas';
 
 	    var context = canvas.getContext('2d');
 

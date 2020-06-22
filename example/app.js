@@ -1,4 +1,6 @@
 App({
-  onLaunch: function () {
+  onLaunch:function (options) {
+  },
+  onShow:function (options) {
   }
 })
