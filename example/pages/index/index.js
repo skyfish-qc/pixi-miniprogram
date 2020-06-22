@@ -4,22 +4,6 @@ var installSpine = require("../../libs/pixi-spine")
 var PIXI = {};
 var app = getApp()
 Page({
-	onShareAppMessage:function(e){
-		return {
-			title: 'test2',
-			desc: '',
-			path:'/pages/index/index'
-		};
-	},
-	onShow:function(options){
-		wx.updateShareMenu({
-			withShareTicket:true
-		});
-		wx.showShareMenu({
-			withShareTicket: true
-		})
-		console.log(wx.getLaunchOptionsSync())
-	},
 	onLoad:function () {
 		var query2d = wx.createSelectorQuery();
 		var query = wx.createSelectorQuery();
