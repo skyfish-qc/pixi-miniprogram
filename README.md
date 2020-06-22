@@ -100,5 +100,6 @@ Page({
 
 - 本项目当前使用的 pixi.js 版本号为 5.2.1。
 - 该适配版本的 PIXI 不在全局环境中，如使用 pixi.js 的其他配套类库，需要自行传入 PIXI 到类库中。可参考libs里面的pixi-spine的做法。
+- 如果需要使用PIXI.Graphics对象，需要在wxml文件中添加一个type 2d的canvas，然后把canvas传入PIXI中，PIXI = createPIXI(canvas,stageWidth,canvas2d);
 - 动态canvas不支持，所以文字需要使用bitmapFont。
 - 视频不支持
