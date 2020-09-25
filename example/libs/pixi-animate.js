@@ -2558,7 +2558,5 @@ function installAnimate(PIXI) {
         exports.sound = sound;
     
     }(PIXI.animate = {}, PIXI));
-        
-    }
-    
-    module.exports = installAnimate
+}
+module.exports = installAnimate

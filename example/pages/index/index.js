@@ -65,7 +65,7 @@ Page({
 					spineBoyPro.state.setAnimation(0, "hoverboard",true);
 					stage.addChild(spineBoyPro);
 					
-					//测试Animate运作
+					//测试Animate
 					var mymc = new PIXI.animate.MovieClip();
 					stage.addChild(mymc);
 
