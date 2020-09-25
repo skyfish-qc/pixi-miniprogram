@@ -18,15 +18,17 @@ export function createPIXI(canvas,stageWidth,canvas2d) {
 	canvas.removeEventListener = function(eventName,eventFun) {
 		window.removeEventListener(eventName,eventFun);
 	}
-	canvas.getContext2 = canvas.getContext;
-	canvas.getContext = function(t){
-		var ctx = null;
-		ctx = canvas.getContext2('webgl');
-		ctx.fillRect=function(){}
-		ctx.fillStyle='';
-		ctx.drawImage=function(){}
-		ctx.getImageData=function(){}
-		return ctx;
+	if(typeof canvas.getContext2!='function') {
+		canvas.getContext2 = canvas.getContext;
+		canvas.getContext = function(t){
+			var ctx = null;
+			ctx = canvas.getContext2('webgl');
+			ctx.fillRect=function(){}
+			ctx.fillStyle='';
+			ctx.drawImage=function(){}
+			ctx.getImageData=function(){}
+			return ctx;
+		}
 	}
 	if(canvas2d) {
 		canvas2d.addEventListener = function () {}

@@ -1,6 +1,7 @@
 import {createPIXI} from "../../libs/pixi.miniprogram"
 var unsafeEval = require("../../libs/unsafeEval")
 var installSpine = require("../../libs/pixi-spine")
+var installAnimate = require("../../libs/pixi-animate")
 var PIXI = {};
 var app = getApp()
 Page({
@@ -16,6 +17,7 @@ Page({
 				PIXI = createPIXI(canvas,stageWidth,canvas2d);//传入canvas，传入canvas宽度，用于计算触摸坐标比例适配触摸位置
 				unsafeEval(PIXI);//适配PIXI里面使用的eval函数
 				installSpine(PIXI);//注入Spine库
+				installAnimate(PIXI);//注入Animate库
 				var renderer = PIXI.autoDetectRenderer({width:stageWidth, height:stageHeight,'transparent':false,'view':canvas});//通过view把小程序的canvas传入
 				var stage = new PIXI.Container();
 				var bg = PIXI.Sprite.from("img/bg.jpg");
@@ -62,6 +64,10 @@ Page({
 					spineBoyPro.scale.set(0.5);
 					spineBoyPro.state.setAnimation(0, "hoverboard",true);
 					stage.addChild(spineBoyPro);
+					
+					//测试Animate运作
+					var mymc = new PIXI.animate.MovieClip();
+					stage.addChild(mymc);
 
 					const graphics = new PIXI.Graphics();
 					graphics.beginFill(0xFF3300);

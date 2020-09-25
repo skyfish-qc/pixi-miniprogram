@@ -13205,6 +13205,9 @@ var PIXI = (function (exports) {
 	            && glTexture.width === width
 	            && glTexture.height === height)
 	        {
+				if(source.type=='canvas') {
+					source = source.getContext('2d').getImageData(0, 0, source.width, source.height);
+				}
 	            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, baseTexture.format, baseTexture.type, source);
 	        }
 	        else
@@ -13213,7 +13216,7 @@ var PIXI = (function (exports) {
 	            glTexture.height = height;
 				if(source.type=='canvas') {
 					source = source.getContext('2d').getImageData(0, 0, source.width, source.height);
-				 }
+				}
 	            gl.texImage2D(baseTexture.target, 0, baseTexture.format, baseTexture.format, baseTexture.type, source);
 	        }
 
