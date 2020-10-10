@@ -6,14 +6,22 @@ var PIXI = {};
 var app = getApp()
 Page({
 	onLoad:function () {
+		var info = wx.getSystemInfoSync();
+		var query = wx.createSelectorQuery();
+		var sw = info.screenWidth;//获取屏幕宽高
+		var sh = info.screenHeight;//获取屏幕宽高
+		var tw = 750;
+		var th = parseInt(tw*sh/sw);//计算canvas实际高度
+		var stageWidth = tw;
+		var stageHeight = th;
 		var query2d = wx.createSelectorQuery();
 		var query = wx.createSelectorQuery();
 		query2d.select('#canvas2d').fields({ node: true, size: true }).exec((res2d) => {
 			var canvas2d = res2d[0].node;
-			query.select('#myCanvas').node().exec((res) => {
-				var stageWidth = 750;//canvas宽度，跟小程序wxss指定的一样大小
-				var stageHeight = 1220;//canvas高度，跟小程序wxss指定的一样大小
+			query.select('#myCanvas').fields({ node: true, size: true }).exec((res) => {
 				var canvas = res[0].node;
+				canvas.width = sw;//设置canvas实际宽高
+				canvas.height = sh;//设置canvas实际宽高,从而实现全屏
 				PIXI = createPIXI(canvas,stageWidth,canvas2d);//传入canvas，传入canvas宽度，用于计算触摸坐标比例适配触摸位置
 				unsafeEval(PIXI);//适配PIXI里面使用的eval函数
 				installSpine(PIXI);//注入Spine库
