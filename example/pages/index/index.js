@@ -2,6 +2,7 @@ import {createPIXI} from "../../libs/pixi.miniprogram"
 var unsafeEval = require("../../libs/unsafeEval")
 var installSpine = require("../../libs/pixi-spine")
 var installAnimate = require("../../libs/pixi-animate")
+var myTween = require("../../libs/myTween")
 var PIXI = {};
 var app = getApp()
 Page({
@@ -30,8 +31,6 @@ Page({
 				var stage = new PIXI.Container();
 				var bg = PIXI.Sprite.from("img/bg.jpg");
 				stage.addChild(bg);
-				var bg = PIXI.Sprite.from("img/bg.jpg");
-				stage.addChild(bg);
 				bg.interactive=true;
 				bg.on("touchstart",function(e){
 					console.log("touchstart",e.data.global)
@@ -54,11 +53,11 @@ Page({
 						explosionTextures.push(texture);
 					}
 
-					for (i = 0; i < 50; i++) {
+					for (i = 0; i < 5; i++) {
 						var explosion = new PIXI.AnimatedSprite(explosionTextures);
 
 						explosion.x = Math.random() * stageWidth;
-						explosion.y = Math.random() * stageHeight;
+						explosion.y = Math.random() * stageHeight*0.2;
 						explosion.anchor.set(0.5);
 						explosion.rotation = Math.random() * Math.PI;
 						explosion.scale.set(0.75 + Math.random() * 0.5);
@@ -84,9 +83,33 @@ Page({
 					stage.addChild(graphics);
 					renderer.render(stage);
 				});
+				//myTween缓动库使用示例
+				/*
+				缓动公式：Linear,Quad,Cubic,Quart,Sine,Expo,Circ,Elastic,Back,Bounce,Quint
+				比如myTween.Quad.Out,myTween.Quad.In,myTween.Quad.InOut
+				onEnd:结束事件
+				onUpdate:每帧触发
+				myTween.clean();//清除所有事件
+				*/
+				var tweenObj = PIXI.Sprite.from("img/head.png");
+				tweenObj.y = 500;
+				stage.addChild(tweenObj);
+				var tx = 600;
+				function tweenMove() {
+					myTween.to(tweenObj,1,{x:tx,ease:myTween.Quad.Out,onEnd:function(){
+						if(tx>0) {
+							tx = 0;
+						} else {
+							tx = 600;
+						}
+						tweenMove();
+					}});
+				}
+				tweenMove();
 				function animate() {
 					canvas.requestAnimationFrame(animate);
 					renderer.render(stage);
+					myTween.update();
 				}
 				animate();
 			})
