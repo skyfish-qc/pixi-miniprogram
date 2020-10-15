@@ -12,25 +12,34 @@ pixijs 小程序 WebGL 的适配版本。
 import {createPIXI} from "../../libs/pixi.miniprogram"
 var unsafeEval = require("../../libs/unsafeEval")
 var installSpine = require("../../libs/pixi-spine")
+var installAnimate = require("../../libs/pixi-animate")
+var myTween = require("../../libs/myTween")
 var PIXI = {};
 var app = getApp()
 Page({
 	onLoad:function () {
+		var info = wx.getSystemInfoSync();
+		var query = wx.createSelectorQuery();
+		var sw = info.screenWidth;//获取屏幕宽高
+		var sh = info.screenHeight;//获取屏幕宽高
+		var tw = 750;
+		var th = parseInt(tw*sh/sw);//计算canvas实际高度
+		var stageWidth = tw;
+		var stageHeight = th;
 		var query2d = wx.createSelectorQuery();
 		var query = wx.createSelectorQuery();
 		query2d.select('#canvas2d').fields({ node: true, size: true }).exec((res2d) => {
 			var canvas2d = res2d[0].node;
-			query.select('#myCanvas').node().exec((res) => {
-				var stageWidth = 750;//canvas宽度，跟小程序wxss指定的一样大小
-				var stageHeight = 1220;//canvas高度，跟小程序wxss指定的一样大小
+			query.select('#myCanvas').fields({ node: true, size: true }).exec((res) => {
 				var canvas = res[0].node;
+				canvas.width = sw;//设置canvas实际宽高
+				canvas.height = sh;//设置canvas实际宽高,从而实现全屏
 				PIXI = createPIXI(canvas,stageWidth,canvas2d);//传入canvas，传入canvas宽度，用于计算触摸坐标比例适配触摸位置
 				unsafeEval(PIXI);//适配PIXI里面使用的eval函数
 				installSpine(PIXI);//注入Spine库
+				installAnimate(PIXI);//注入Animate库
 				var renderer = PIXI.autoDetectRenderer({width:stageWidth, height:stageHeight,'transparent':false,'view':canvas});//通过view把小程序的canvas传入
 				var stage = new PIXI.Container();
-				var bg = PIXI.Sprite.from("img/bg.jpg");
-				stage.addChild(bg);
 				var bg = PIXI.Sprite.from("img/bg.jpg");
 				stage.addChild(bg);
 				bg.interactive=true;
@@ -55,11 +64,11 @@ Page({
 						explosionTextures.push(texture);
 					}
 
-					for (i = 0; i < 50; i++) {
+					for (i = 0; i < 5; i++) {
 						var explosion = new PIXI.AnimatedSprite(explosionTextures);
 
 						explosion.x = Math.random() * stageWidth;
-						explosion.y = Math.random() * stageHeight;
+						explosion.y = Math.random() * stageHeight*0.2;
 						explosion.anchor.set(0.5);
 						explosion.rotation = Math.random() * Math.PI;
 						explosion.scale.set(0.75 + Math.random() * 0.5);
@@ -73,6 +82,10 @@ Page({
 					spineBoyPro.scale.set(0.5);
 					spineBoyPro.state.setAnimation(0, "hoverboard",true);
 					stage.addChild(spineBoyPro);
+					
+					//测试Animate
+					var mymc = new PIXI.animate.MovieClip();
+					stage.addChild(mymc);
 
 					const graphics = new PIXI.Graphics();
 					graphics.beginFill(0xFF3300);
@@ -81,9 +94,33 @@ Page({
 					stage.addChild(graphics);
 					renderer.render(stage);
 				});
+				//myTween缓动库使用示例
+				/*
+				缓动公式：Linear,Quad,Cubic,Quart,Sine,Expo,Circ,Elastic,Back,Bounce,Quint
+				比如myTween.Quad.Out,myTween.Quad.In,myTween.Quad.InOut
+				onEnd:结束事件
+				onUpdate:每帧触发
+				myTween.clean();//清除所有事件
+				*/
+				var tweenObj = PIXI.Sprite.from("img/head.png");
+				tweenObj.y = 500;
+				stage.addChild(tweenObj);
+				var tx = 600;
+				function tweenMove() {
+					myTween.to(tweenObj,1,{x:tx,ease:myTween.Quad.Out,onEnd:function(){
+						if(tx>0) {
+							tx = 0;
+						} else {
+							tx = 600;
+						}
+						tweenMove();
+					}});
+				}
+				tweenMove();
 				function animate() {
 					canvas.requestAnimationFrame(animate);
 					renderer.render(stage);
+					myTween.update();
 				}
 				animate();
 			})
