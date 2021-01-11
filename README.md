@@ -1,4 +1,8 @@
 pixijs 小程序 WebGL 的适配版本。
+---
+修复graphics在新版微信内不正常显示的bug
+---
+
 
 ## 使用
 
@@ -19,21 +23,22 @@ var app = getApp()
 Page({
 	onLoad:function () {
 		var info = wx.getSystemInfoSync();
-		var query = wx.createSelectorQuery();
 		var sw = info.screenWidth;//获取屏幕宽高
 		var sh = info.screenHeight;//获取屏幕宽高
 		var tw = 750;
 		var th = parseInt(tw*sh/sw);//计算canvas实际高度
 		var stageWidth = tw;
 		var stageHeight = th;
-		var query2d = wx.createSelectorQuery();
 		var query = wx.createSelectorQuery();
-		query2d.select('#canvas2d').fields({ node: true, size: true }).exec((res2d) => {
-			var canvas2d = res2d[0].node;
-			query.select('#myCanvas').fields({ node: true, size: true }).exec((res) => {
-				var canvas = res[0].node;
-				canvas.width = sw;//设置canvas实际宽高
-				canvas.height = sh;//设置canvas实际宽高,从而实现全屏
+		query.select('#myCanvas').node().exec((res) => {
+			var canvas = res[0].node;
+			canvas.width = sw;//设置canvas实际宽高
+			canvas.height = sh;//设置canvas实际宽高,从而实现全屏
+			var query2d = wx.createSelectorQuery();
+			query2d.select('#canvas2d').fields({ node: true, size: true }).exec(function(res2d){
+				var canvas2d = res2d[0].node;
+				canvas2d.width = 16;
+				canvas2d.height = 16;
 				PIXI = createPIXI(canvas,stageWidth,canvas2d);//传入canvas，传入canvas宽度，用于计算触摸坐标比例适配触摸位置
 				unsafeEval(PIXI);//适配PIXI里面使用的eval函数
 				installSpine(PIXI);//注入Spine库
@@ -89,8 +94,10 @@ Page({
 
 					const graphics = new PIXI.Graphics();
 					graphics.beginFill(0xFF3300);
-					graphics.drawRect(50, 250, 100, 100);
+					graphics.drawRect(0, 0, 100, 100);
 					graphics.endFill();
+					graphics.x = 100;
+					graphics.y = 200;
 					stage.addChild(graphics);
 					renderer.render(stage);
 				});
@@ -123,7 +130,8 @@ Page({
 					myTween.update();
 				}
 				animate();
-			})
+				// renderer.render(stage);
+			  });
 		})
 	},
 	touchEvent:function(e){

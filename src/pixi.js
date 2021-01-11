@@ -825,7 +825,7 @@ var PIXI = (function (exports) {
 	     * @type {PIXI.MIPMAP_MODES}
 	     * @default PIXI.MIPMAP_MODES.POW2
 	     */
-	    MIPMAP_TEXTURES: 1,
+	    MIPMAP_TEXTURES: 0,
 
 	    /**
 	     * Default anisotropic filtering level of textures.
@@ -13207,8 +13207,26 @@ var PIXI = (function (exports) {
 	        {
 				if(source.type=='canvas') {
 					source = source.getContext('2d').getImageData(0, 0, source.width, source.height);
+					
+					gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, baseTexture.alphaMode === exports.ALPHA_MODES.UNPACK);
+					var buf = new Uint8Array(source.data);
+					glTexture.width = baseTexture.width;
+					glTexture.height = baseTexture.height;
+
+					gl.texImage2D(
+						baseTexture.target,
+						0,
+						glTexture.internalFormat,
+						baseTexture.width,
+						baseTexture.height,
+						0,
+						baseTexture.format,
+						glTexture.type,
+						buf
+					);
+				} else {
+					gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, baseTexture.format, baseTexture.type, source);
 				}
-	            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, baseTexture.format, baseTexture.type, source);
 	        }
 	        else
 	        {
@@ -13216,8 +13234,26 @@ var PIXI = (function (exports) {
 	            glTexture.height = height;
 				if(source.type=='canvas') {
 					source = source.getContext('2d').getImageData(0, 0, source.width, source.height);
+					
+					gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, baseTexture.alphaMode === exports.ALPHA_MODES.UNPACK);
+					var buf = new Uint8Array(source.data);
+					glTexture.width = baseTexture.width;
+					glTexture.height = baseTexture.height;
+
+					gl.texImage2D(
+						baseTexture.target,
+						0,
+						glTexture.internalFormat,
+						baseTexture.width,
+						baseTexture.height,
+						0,
+						baseTexture.format,
+						glTexture.type,
+						buf
+					);
+				} else {
+					gl.texImage2D(baseTexture.target, 0, baseTexture.format, baseTexture.format, baseTexture.type, source);
 				}
-	            gl.texImage2D(baseTexture.target, 0, baseTexture.format, baseTexture.format, baseTexture.type, source);
 	        }
 
 	        return true;
@@ -16632,8 +16668,7 @@ var PIXI = (function (exports) {
 
 	    context.fillStyle = 'white';
 	    context.fillRect(0, 0, 16, 16);
-
-	    return new Texture(new BaseTexture(new CanvasResource(canvas)));
+		return new Texture(new BaseTexture(new CanvasResource(canvas)));
 	}
 
 	function removeAllHandlers(tex)
@@ -28245,8 +28280,6 @@ var PIXI = (function (exports) {
 	          resource.data.onload = null;
 	          next();
 	        }; // next will be called on load.
-
-
 	        return;
 	      }
 	  }
@@ -35638,7 +35671,9 @@ var PIXI = (function (exports) {
 	 */
 	TextMetrics.measureText = function measureText (text, style, wordWrap, canvas)
 	{
-	        if ( canvas === void 0 ) { canvas = TextMetrics._canvas; }
+		if(typeof canvas=="undefined") {
+			canvas = TextMetrics._canvas;
+		}
 
 	    wordWrap = (wordWrap === undefined || wordWrap === null) ? style.wordWrap : wordWrap;
 	    var font = style.toFontString();
@@ -36265,25 +36300,7 @@ var PIXI = (function (exports) {
 	 * @private
 	 */
 
-	var canvas = (function () {
-	    try
-	    {
-	        // OffscreenCanvas2D measureText can be up to 40% faster.
-	        var c = new OffscreenCanvas(0, 0);
-	        var context = c.getContext('2d');
-
-	        if (context && context.measureText)
-	        {
-	            return c;
-	        }
-
-	        return document.createElement('canvas');
-	    }
-	    catch (ex)
-	    {
-	        return document.createElement('canvas');
-	    }
-	})();
+	var canvas = wx.createOffscreenCanvas();
 
 	canvas.width = canvas.height = 10;
 
@@ -36428,7 +36445,7 @@ var PIXI = (function (exports) {
 	var Text = /*@__PURE__*/(function (Sprite) {
 	    function Text(text, style, canvas)
 	    {
-	        canvas = canvas || document.createElement('canvas');
+	        canvas = canvas || document.createElement('canvas2d');
 
 	        canvas.width = 3;
 	        canvas.height = 3;

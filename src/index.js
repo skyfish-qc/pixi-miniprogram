@@ -31,6 +31,7 @@ export function createPIXI(canvas,stageWidth,canvas2d) {
 		}
 	}
 	if(canvas2d) {
+		canvas2d.style = {width: canvas2d.width + 'px', height: canvas2d.height + 'px'}
 		canvas2d.addEventListener = function () {}
 		canvas2d.removeEventListener = function () {}
 	}
@@ -93,6 +94,9 @@ export function createPIXI(canvas,stageWidth,canvas2d) {
 					img.crossOrigin="";
 					return img;
 					break;
+				case "div":
+					return {style:{}}
+					break;
 			}
 		},
 		createElement(type) {
@@ -142,6 +146,9 @@ export function createPIXI(canvas,stageWidth,canvas2d) {
 					break;
 				case "a":
 					return {href:""}
+					break;
+				case "div":
+					return {style:{}}
 					break;
 			}
 		},
