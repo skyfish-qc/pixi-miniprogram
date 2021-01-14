@@ -13200,30 +13200,14 @@ var PIXI = (function (exports) {
 
 	        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, baseTexture.alphaMode === exports.ALPHA_MODES.UNPACK);
 
-	        if (!this.noSubImage
-	            && baseTexture.target === gl.TEXTURE_2D
-	            && glTexture.width === width
-	            && glTexture.height === height)
+	        if (!this.noSubImage&& baseTexture.target === gl.TEXTURE_2D&& glTexture.width === width&& glTexture.height === height)
 	        {
 				if(source.type=='canvas') {
 					source = source.getContext('2d').getImageData(0, 0, source.width, source.height);
 					
 					gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, baseTexture.alphaMode === exports.ALPHA_MODES.UNPACK);
 					var buf = new Uint8Array(source.data);
-					glTexture.width = baseTexture.width;
-					glTexture.height = baseTexture.height;
-
-					gl.texImage2D(
-						baseTexture.target,
-						0,
-						glTexture.internalFormat,
-						baseTexture.width,
-						baseTexture.height,
-						0,
-						baseTexture.format,
-						glTexture.type,
-						buf
-					);
+					gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, baseTexture.format, baseTexture.type, buf);
 				} else {
 					gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, baseTexture.format, baseTexture.type, source);
 				}
@@ -13231,7 +13215,7 @@ var PIXI = (function (exports) {
 	        else
 	        {
 	            glTexture.width = width;
-	            glTexture.height = height;
+				glTexture.height = height;
 				if(source.type=='canvas') {
 					source = source.getContext('2d').getImageData(0, 0, source.width, source.height);
 					
@@ -13740,7 +13724,6 @@ var PIXI = (function (exports) {
 	        {
 	            glTexture.width = baseTexture.width;
 	            glTexture.height = baseTexture.height;
-
 	            gl.texImage2D(
 	                baseTexture.target,
 	                0,
@@ -36300,7 +36283,7 @@ var PIXI = (function (exports) {
 	 * @private
 	 */
 
-	var canvas = wx.createOffscreenCanvas();
+	var canvas = document.createElement("canvas2dText");
 
 	canvas.width = canvas.height = 10;
 
@@ -36445,12 +36428,13 @@ var PIXI = (function (exports) {
 	var Text = /*@__PURE__*/(function (Sprite) {
 	    function Text(text, style, canvas)
 	    {
-	        canvas = canvas || document.createElement('canvas2d');
+	        canvas = canvas || document.createElement('canvas2dText');
 
 	        canvas.width = 3;
 	        canvas.height = 3;
 
-	        var texture = Texture.from(canvas);
+			var idata = canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height);
+	        var texture = Texture.fromBuffer(new Uint8Array(idata.data),canvas.width,canvas.height);
 
 	        texture.orig = new Rectangle();
 	        texture.trim = new Rectangle();
@@ -36543,10 +36527,15 @@ var PIXI = (function (exports) {
 	        {
 	            return;
 	        }
-
 	        this._font = this._style.toFontString();
 
-	        var context = this.context;
+			var context = this.context;
+			//backup canvas info
+			var owidth = this.canvas.width;
+			var oheight = this.canvas.height;
+			var imgData = context.getImageData(0,0,owidth,oheight);
+			//backup canvas info end
+
 	        var measured = TextMetrics.measureText(this._text || ' ', this._style, this._style.wordWrap, this.canvas);
 	        var width = measured.width;
 	        var height = measured.height;
@@ -36657,6 +36646,11 @@ var PIXI = (function (exports) {
 	        }
 
 	        this.updateTexture();
+			//restore canvas info
+			this.canvas.width = owidth;
+			this.canvas.height = oheight;
+			context.putImageData(imgData,0,0);
+			//restore canvas info end
 	    };
 
 	    /**
@@ -36728,6 +36722,7 @@ var PIXI = (function (exports) {
 	     */
 	    Text.prototype.updateTexture = function updateTexture ()
 	    {
+			this.dirty=false;
 	        var canvas = this.canvas;
 
 	        if (this._style.trim)
@@ -36742,7 +36737,7 @@ var PIXI = (function (exports) {
 	            }
 	        }
 
-	        var texture = this._texture;
+			var texture = this._texture;
 	        var style = this._style;
 	        var padding = style.trim ? 0 : style.padding;
 	        var baseTexture = texture.baseTexture;
@@ -36750,7 +36745,10 @@ var PIXI = (function (exports) {
 	        texture.trim.width = texture._frame.width = Math.ceil(canvas.width / this._resolution);
 	        texture.trim.height = texture._frame.height = Math.ceil(canvas.height / this._resolution);
 	        texture.trim.x = -padding;
-	        texture.trim.y = -padding;
+			texture.trim.y = -padding;
+			texture.baseTexture.width = texture.trim.width;
+			texture.baseTexture.height = texture.trim.height;
+			texture.baseTexture.resource.data = new Uint8Array(this.context.getImageData(0,0,canvas.width,canvas.height).data);
 
 	        texture.orig.width = texture._frame.width - (padding * 2);
 	        texture.orig.height = texture._frame.height - (padding * 2);

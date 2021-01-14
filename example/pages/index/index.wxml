@@ -2,4 +2,5 @@
 <view class="container">
   <canvas type="webgl" id="myCanvas" bindtouchstart="touchEvent" bindtouchmove="touchEvent" bindtouchend="touchEvent" bindtouchcancel="touchEvent"></canvas>
   <canvas type="2d" id="canvas2d" style="position:absolute;left:-10000px;top:0;width:16px;height:16px;"></canvas>
+  <canvas type="2d" id="canvas2dText" style="position:absolute;left:-10000px;top:0;width:16px;height:16px;"></canvas>
 </view>
