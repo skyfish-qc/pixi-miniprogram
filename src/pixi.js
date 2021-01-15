@@ -36530,11 +36530,6 @@ var PIXI = (function (exports) {
 	        this._font = this._style.toFontString();
 
 			var context = this.context;
-			//backup canvas info
-			var owidth = this.canvas.width;
-			var oheight = this.canvas.height;
-			var imgData = context.getImageData(0,0,owidth,oheight);
-			//backup canvas info end
 
 	        var measured = TextMetrics.measureText(this._text || ' ', this._style, this._style.wordWrap, this.canvas);
 	        var width = measured.width;
@@ -36646,11 +36641,6 @@ var PIXI = (function (exports) {
 	        }
 
 	        this.updateTexture();
-			//restore canvas info
-			this.canvas.width = owidth;
-			this.canvas.height = oheight;
-			context.putImageData(imgData,0,0);
-			//restore canvas info end
 	    };
 
 	    /**
