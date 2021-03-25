@@ -33,7 +33,7 @@ Page({
 					unsafeEval(PIXI);//适配PIXI里面使用的eval函数
 					installSpine(PIXI);//注入Spine库
 					installAnimate(PIXI);//注入Animate库
-					var renderer = PIXI.autoDetectRenderer({width:stageWidth, height:stageHeight,'transparent':false,'view':canvas});//通过view把小程序的canvas传入
+					var renderer = PIXI.autoDetectRenderer({width:stageWidth, height:stageHeight,'transparent':false,premultipliedAlpha:true,'view':canvas});//通过view把小程序的canvas传入
 					var stage = new PIXI.Container();
 					var bg = PIXI.Sprite.from("img/bg.jpg");
 					stage.addChild(bg);
@@ -59,7 +59,7 @@ Page({
 							explosionTextures.push(texture);
 						}
 
-						for (i = 0; i < 5; i++) {
+						for (i = 0; i < 2; i++) {
 							var explosion = new PIXI.AnimatedSprite(explosionTextures);
 
 							explosion.x = Math.random() * stageWidth;
@@ -103,11 +103,44 @@ Page({
 
 						const graphics2 = new PIXI.Graphics();
 						graphics2.beginFill(0xFFFF00);
-						graphics2.drawRect(0, 0, 100, 100);
+						graphics2.drawRect(0, 0, 200, 200);
 						graphics2.endFill();
-						graphics2.x = 600;
-						graphics2.y = 200;
+						graphics2.x = 200;
+						graphics2.y = 400;
 						stage.addChild(graphics2);
+
+						//遮罩示例start
+						//遮罩示意shader
+						var frag = `
+						varying vec2 vTextureCoord;
+						uniform vec4 inputPixel;
+						uniform vec2 dimensions;
+						uniform sampler2D uSampler;
+						uniform sampler2D masktex;
+						void main(void) {
+							vec4 color = texture2D(uSampler, vTextureCoord);
+							vec2 coord = vTextureCoord.xy * inputPixel.xy / dimensions.xy;
+							vec4 maskcolor = texture2D(masktex, coord);
+							gl_FragColor = color*maskcolor;
+						}
+						`;
+						const maskshape = new PIXI.Graphics();
+						maskshape.beginFill(0xFFFFFF);//用于遮罩的形状必须为白色，因为shader遮罩原理是目标颜色乘以遮罩形状颜色，设置成白色可以避免干扰目标颜色。
+						maskshape.drawCircle(100, 100, 200);
+						maskshape.endFill();
+						maskshape.x = 200;
+						maskshape.y = 600;
+						stage.addChild(maskshape);//先加入渲染
+						var masktex = renderer.generateTexture(maskshape);//获取到遮罩形状纹理，如果是直接加载外部遮罩图片，上面部分可以省略。
+						stage.removeChild(maskshape);//获得纹理后移除
+						var uniform = {
+							masktex:masktex,
+							dimensions: [200, 200]//传入遮罩纹理图片尺寸，用于计算纹理的实际uv
+						}
+						
+						var shader = new PIXI.Filter(null,frag,uniform);
+						graphics2.filters = [shader];//给graphics2物体进行遮罩，原来是方形的经过遮罩后变成圆形
+						//遮罩示例end
 
 						renderer.render(stage);
 					});
