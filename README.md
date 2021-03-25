@@ -142,7 +142,7 @@ Page({
                         `;
                         const maskshape = new PIXI.Graphics();
                         maskshape.beginFill(0xFFFFFF);//用于遮罩的形状必须为白色，因为shader遮罩原理是目标颜色乘以遮罩形状颜色，设置成白色可以避免干扰目标颜色。
-                        maskshape.drawCircle(100, 100, 200);
+                        maskshape.drawCircle(100, 100, 100);
                         maskshape.endFill();
                         maskshape.x = 200;
                         maskshape.y = 600;
