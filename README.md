@@ -3,6 +3,7 @@
   - 2021.1.11 修复graphics在新版微信内不正常显示的bug
   - 2021.1.14 改写PIXI.Text和PIXI.Graphics的渲染逻辑，需要在wxml文件中添加两个type 2d的canvas，然后把canvas传入PIXI中。其中一个用于Graphics渲染，一个用于Text渲染，传入参数示例：PIXI = createPIXI(canvas,stageWidth,canvas2d,canvas2dText)
   - 2021.3.25 添加遮罩实现示例
+  - 2021.3.29 添加performance的判断
 ---
 
 ## 使用

@@ -40,6 +40,7 @@ export function createPIXI(canvas,stageWidth,canvas2d,canvas2dText) {
 		canvas2dText.addEventListener = function () {}
 		canvas2dText.removeEventListener = function () {}
 	}
+	var performance = performance || wx.getPerformance();
 	const requestAnimationFrame = canvas.requestAnimationFrame;
 	const HTMLVideoElement = function(){};
 	const HTMLCanvasElement = function(){};
