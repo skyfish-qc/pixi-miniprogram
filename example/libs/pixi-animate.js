@@ -1497,7 +1497,8 @@ function installAnimate(PIXI) {
                             // handle spritesheets
                             scene.spritesheets.push(resource.spritesheet);
                         }
-                        else if (resource.data.nodeName === 'IMG') {
+                        //else if (resource.data.nodeName === 'IMG') {
+                        else if (resource.type === 3) {//修改图片类型判断,小程序里面的图片没有nodeName属性，需要修改
                             // handle individual textures
                             scene.textures[resource.name] = resource.texture;
                         }
