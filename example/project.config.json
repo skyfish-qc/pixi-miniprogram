@@ -15,6 +15,7 @@
     "autoAudits": false,
     "showShadowRootInWxmlPanel": false,
     "scopeDataCheck": false,
+    "uglifyFileName": true,
     "checkInvalidKey": true,
     "checkSiteMap": true,
     "uploadWithSourceMap": true,
@@ -26,7 +27,7 @@
       "disablePlugins": [],
       "outputPath": ""
     },
-    "bundle": true,
+    "bundle": false,
     "useIsolateContext": true,
     "useCompilerModule": true,
     "userConfirmedUseCompilerModuleSwitch": false,
@@ -34,10 +35,10 @@
     "packNpmManually": false,
     "packNpmRelationList": [],
     "minifyWXSS": true,
-    "uglifyFileName": true
+    "minifyWXML": true
   },
   "compileType": "miniprogram",
-  "libVersion": "2.16.0",
+  "libVersion": "2.16.1",
   "appid": "wx7b77cc7f7cc54bbd",
   "projectname": "test_webgl2",
   "debugOptions": {

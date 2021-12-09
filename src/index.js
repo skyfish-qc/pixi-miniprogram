@@ -4,7 +4,7 @@ import window from './window'
 var DOMParser=require("./xmldom").DOMParser;
 import TouchEvent from "./touchEvent"
 
-export function createPIXI(canvas,stageWidth,canvas2d,canvas2dText) {
+export function createPIXI(canvas,stageWidth) {
 	let ratio = stageWidth/canvas.width;
 	let evtArr = {};
 	canvas.style = {width: canvas.width + 'px', height: canvas.height + 'px'}
@@ -30,16 +30,6 @@ export function createPIXI(canvas,stageWidth,canvas2d,canvas2dText) {
 			return ctx;
 		}
 	}
-	if(canvas2d) {
-		canvas2d.style = {width: canvas2d.width + 'px', height: canvas2d.height + 'px'}
-		canvas2d.addEventListener = function () {}
-		canvas2d.removeEventListener = function () {}
-	}
-	if(canvas2dText) {
-		canvas2dText.style = {width: canvas2dText.width + 'px', height: canvas2dText.height + 'px'}
-		canvas2dText.addEventListener = function () {}
-		canvas2dText.removeEventListener = function () {}
-	}
 	var performance = performance || wx.getPerformance();
 	const requestAnimationFrame = canvas.requestAnimationFrame;
 	const HTMLVideoElement = function(){};
@@ -59,60 +49,25 @@ export function createPIXI(canvas,stageWidth,canvas2d,canvas2dText) {
 			let cvs;
 			switch(type) {
 				case "canvas":
-					cvs = wx.createOffscreenCanvas();
-					cvs.style = {width: cvs.width + 'px', height: cvs.height + 'px'}
-					cvs.addEventListener = function () {}
-					cvs.removeEventListener = function () {}
-					cvs.getContext2 = cvs.getContext;
-					cvs.getContext = function(t){
-						var ctx = cvs.getContext2('webgl');
-						ctx.fillRect=function(){}
-						ctx.fillStyle='';
-						ctx.drawImage=function(){}
-						ctx.getImageData=function(){}
-						return ctx;
-					}
-					return cvs;
+					cvs = wx.createOffscreenCanvas({type: 'webgl', width: 1, height: 1});
+                    cvs.style = {width: '1px', height: '1px'}
+                    cvs.addEventListener = function () {}
+                    cvs.removeEventListener = function () {}
+                    return cvs;
 					break;
 				case "canvas2d":
-					if(canvas2d) {
-						return canvas2d;
-					} else {
-						cvs = wx.createOffscreenCanvas();
-						cvs.style = {width: cvs.width + 'px', height: cvs.height + 'px'}
-						cvs.addEventListener = function () {}
-						cvs.removeEventListener = function () {}
-						cvs.getContext2 = cvs.getContext;
-						cvs.getContext = function(t){
-							var ctx = cvs.getContext2('webgl');
-							ctx.fillRect=function(){}
-							ctx.fillStyle='';
-							ctx.drawImage=function(){}
-							ctx.getImageData=function(){}
-							return ctx;
-						}
-						return cvs;
-					}
+					cvs = wx.createOffscreenCanvas({type: '2d', width: 1, height: 1});
+                    cvs.style = {width: '1px', height: '1px'}
+                    cvs.addEventListener = function () {}
+                    cvs.removeEventListener = function () {}
+                    return cvs;
 					break;
 				case "canvas2dText":
-					if(canvas2dText) {
-						return canvas2dText;
-					} else {
-						cvs = wx.createOffscreenCanvas();
-						cvs.style = {width: cvs.width + 'px', height: cvs.height + 'px'}
-						cvs.addEventListener = function () {}
-						cvs.removeEventListener = function () {}
-						cvs.getContext2 = cvs.getContext;
-						cvs.getContext = function(t){
-							var ctx = cvs.getContext2('webgl');
-							ctx.fillRect=function(){}
-							ctx.fillStyle='';
-							ctx.drawImage=function(){}
-							ctx.getImageData=function(){}
-							return ctx;
-						}
-						return cvs;
-					}
+					cvs = wx.createOffscreenCanvas({type: '2d', width: 1, height: 1});
+                    cvs.style = {width: '1px', height: '1px'}
+                    cvs.addEventListener = function () {}
+                    cvs.removeEventListener = function () {}
+                    return cvs;
 					break;
 				case "img":
 				case "image":
@@ -129,60 +84,25 @@ export function createPIXI(canvas,stageWidth,canvas2d,canvas2dText) {
 			let cvs;
 			switch(type) {
 				case "canvas":
-					cvs = wx.createOffscreenCanvas();
-					cvs.style = {width: cvs.width + 'px', height: cvs.height + 'px'}
-					cvs.addEventListener = function () {}
-					cvs.removeEventListener = function () {}
-					cvs.getContext2 = cvs.getContext;
-					cvs.getContext = function(t){
-						var ctx = cvs.getContext2('webgl');
-						ctx.fillRect=function(){}
-						ctx.fillStyle='';
-						ctx.drawImage=function(){}
-						ctx.getImageData=function(){}
-						return ctx;
-					}
-					return cvs;
+					cvs = wx.createOffscreenCanvas({type: 'webgl', width: 1, height: 1});
+                    cvs.style = {width: '1px', height: '1px'}
+                    cvs.addEventListener = function () {}
+                    cvs.removeEventListener = function () {}
+                    return cvs;
 					break;
 				case "canvas2d":
-					if(canvas2d) {
-						return canvas2d;
-					} else {
-						cvs = wx.createOffscreenCanvas();
-						cvs.style = {width: cvs.width + 'px', height: cvs.height + 'px'}
-						cvs.addEventListener = function () {}
-						cvs.removeEventListener = function () {}
-						cvs.getContext2 = cvs.getContext;
-						cvs.getContext = function(t){
-							var ctx = cvs.getContext2('webgl');
-							ctx.fillRect=function(){}
-							ctx.fillStyle='';
-							ctx.drawImage=function(){}
-							ctx.getImageData=function(){}
-							return ctx;
-						}
-						return cvs;
-					}
+					cvs = wx.createOffscreenCanvas({type: '2d', width: 1, height: 1});
+                    cvs.style = {width: '1px', height: '1px'}
+                    cvs.addEventListener = function () {}
+                    cvs.removeEventListener = function () {}
+                    return cvs;
 					break;
 				case "canvas2dText":
-					if(canvas2dText) {
-						return canvas2dText;
-					} else {
-						cvs = wx.createOffscreenCanvas();
-						cvs.style = {width: cvs.width + 'px', height: cvs.height + 'px'}
-						cvs.addEventListener = function () {}
-						cvs.removeEventListener = function () {}
-						cvs.getContext2 = cvs.getContext;
-						cvs.getContext = function(t){
-							var ctx = cvs.getContext2('webgl');
-							ctx.fillRect=function(){}
-							ctx.fillStyle='';
-							ctx.drawImage=function(){}
-							ctx.getImageData=function(){}
-							return ctx;
-						}
-						return cvs;
-					}
+					cvs = wx.createOffscreenCanvas({type: '2d', width: 1, height: 1});
+                    cvs.style = {width: '1px', height: '1px'}
+                    cvs.addEventListener = function () {}
+                    cvs.removeEventListener = function () {}
+                    return cvs;
 					break;
 				case "img":
 				case "image":
