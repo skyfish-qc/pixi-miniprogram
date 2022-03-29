@@ -36,9 +36,14 @@ Page({
             });
             //小程序不支持加载本地fnt，json文件，所以涉及到fnt，json文件的加载需要放到网络服务器
             PIXI.Loader.shared
+                .add({
+                    name:'sound',
+                    url:'https://96.f.1ting.com/local_to_cube_202004121813/96kmp3/2021/12/08/08b_zd/01.mp3'
+                })
                 .add("https://raw.githubusercontent.com/skyfish-qc/imgres/master/blog.fnt")
                 .add("https://raw.githubusercontent.com/skyfish-qc/imgres/master/mc.json")
                 .add('spineboypro', "https://raw.githubusercontent.com/skyfish-qc/imgres/master/spineboy-pro.json").load(function(loader, res){
+                res["sound"].data.play();//播放音乐
                 var btext = new PIXI.BitmapText('score:1234',{'font':{'name':'blog','size':'60px'},'tint':0xffff00});
                 btext.x = 40;
                 btext.y = 140;

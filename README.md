@@ -6,6 +6,7 @@
   - 2021.3.29 添加performance的判断
   - 2021.5.11 修改animate库不能显示的问题
   - 2021.12.09 使用微信小程序新版本的获取离屏canvas接口获取2d离屏canvas，减少创建PIXI时候额外传入的两个canvas，该版本需要微信小程序基础库2.16.1以上。如果要兼容旧版本的基础库，请使用v1.0版本代码。
+  - 2022.03.29 添加音频支持
 ---
 
 ## 使用
@@ -55,9 +56,14 @@ Page({
             });
             //小程序不支持加载本地fnt，json文件，所以涉及到fnt，json文件的加载需要放到网络服务器
             PIXI.Loader.shared
+                .add({
+                    name:'sound',
+                    url:'https://96.f.1ting.com/local_to_cube_202004121813/96kmp3/2021/12/08/08b_zd/01.mp3'
+                })
                 .add("https://raw.githubusercontent.com/skyfish-qc/imgres/master/blog.fnt")
                 .add("https://raw.githubusercontent.com/skyfish-qc/imgres/master/mc.json")
                 .add('spineboypro', "https://raw.githubusercontent.com/skyfish-qc/imgres/master/spineboy-pro.json").load(function(loader, res){
+                res["sound"].data.play();//播放音乐
                 var btext = new PIXI.BitmapText('score:1234',{'font':{'name':'blog','size':'60px'},'tint':0xffff00});
                 btext.x = 40;
                 btext.y = 140;

@@ -3,6 +3,7 @@ import XMLHttpRequest from './XMLHttpRequest'
 import window from './window'
 var DOMParser=require("./xmldom").DOMParser;
 import TouchEvent from "./touchEvent"
+import Audio from './Audio'
 
 export function createPIXI(canvas,stageWidth) {
 	let ratio = stageWidth/canvas.width;
@@ -37,7 +38,8 @@ export function createPIXI(canvas,stageWidth) {
 	const HTMLImageElement = function(){};
 	const MouseEvent = function(){};
 	const navigator={
-		userAgent:""
+		userAgent:"",
+        isCocoonJS:true
 	};
 	const Image = function(){
 		let img= canvas.createImage();
@@ -75,6 +77,10 @@ export function createPIXI(canvas,stageWidth) {
 					img.crossOrigin="";
 					return img;
 					break;
+                case "audio":
+                    let audio= new Audio();
+                    return audio;
+                    break;
 				case "div":
 					return {style:{}}
 					break;
@@ -109,6 +115,10 @@ export function createPIXI(canvas,stageWidth) {
 					let img= canvas.createImage();
 					img.crossOrigin="";
 					return img;
+					break;
+				case "audio":
+					let audio= new Audio();
+					return audio;
 					break;
 				case "a":
 					return {href:""}

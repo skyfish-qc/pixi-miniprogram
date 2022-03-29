@@ -27557,7 +27557,6 @@ var PIXI = (function (exports) {
 	    if (this.crossOrigin) {
 	      this.data.crossOrigin = this.crossOrigin;
 	    }
-
 	    if (!this.metadata.skipSource) {
 	      // support for CocoonJS Canvas+ runtime, lacks document.createElement('source')
 	      if (navigator.isCocoonJS) {
