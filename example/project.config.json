@@ -41,7 +41,7 @@
   "compileType": "miniprogram",
   "libVersion": "2.16.1",
   "appid": "wx7b77cc7f7cc54bbd",
-  "projectname": "test_webgl2",
+  "projectname": "example for pixijs",
   "debugOptions": {
     "hidedInDevtools": []
   },
