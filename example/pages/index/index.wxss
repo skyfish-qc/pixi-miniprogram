@@ -1,2 +1,2 @@
-#myCanvas{position:absolute;left:0;top:0;width:750rpx;height:100%;z-index:2}
+#myCanvas{position:absolute;left:0;top:0;width:750rpx;height:100%;z-index:2;}
 #canvs2d{position:absolute;left:-10000px;top:-10000px;width:16px;height:16px;}

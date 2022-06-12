@@ -1,1 +1,1 @@
-.container{position:absolute;left:0;top:0;width:750rpx;height:100%;overflow:hidden;}
+.container{position:absolute;left:0;top:0;width:750rpx;height:100%;overflow:hidden;background:#ff0000;}

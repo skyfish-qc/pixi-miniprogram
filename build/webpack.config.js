@@ -12,6 +12,7 @@ module.exports = {
   target: 'web',
   output: {
     path: path.join(__dirname, '../dist'),
+    // path: path.join(__dirname, '../example/libs'),
     filename: 'pixi.miniprogram.js',
     libraryTarget: 'commonjs',
   },

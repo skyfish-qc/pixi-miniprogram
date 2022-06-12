@@ -18610,7 +18610,7 @@ var PIXI = (function (exports) {
 	 * @default PIXI.ENV.WEBGL2
 	 */
 	settings.PREFER_ENV = isMobile$1.any ? exports.ENV.WEBGL : exports.ENV.WEBGL2;
-
+	settings.PREFER_ENV = exports.ENV.WEBGL;
 	/**
 	 * If set to `true`, Textures and BaseTexture objects stored
 	 * in the caches ({@link PIXI.utils.TextureCache TextureCache} and
@@ -18696,7 +18696,6 @@ var PIXI = (function (exports) {
 	        this.gl = gl;
 	        this.renderer.gl = gl;
 	        this.renderer.CONTEXT_UID = CONTEXT_UID++;
-
 	        // restore a context if it was previously lost
 	        if (gl.isContextLost() && gl.getExtension('WEBGL_lose_context'))
 	        {
@@ -18729,7 +18728,6 @@ var PIXI = (function (exports) {
 	    ContextSystem.prototype.initFromOptions = function initFromOptions (options)
 	    {
 	        var gl = this.createContext(this.renderer.view, options);
-
 	        this.initFromContext(gl);
 	    };
 
@@ -20298,6 +20296,8 @@ var PIXI = (function (exports) {
 
 	var unknownContext = {};
 	var context = unknownContext;
+	var testOptions = {};
+	var WebGLRenderingContext=null;
 
 	/**
 	 * returns a little WebGL context to use for program inspection.
@@ -20316,13 +20316,13 @@ var PIXI = (function (exports) {
 
 	        if (settings.PREFER_ENV >= exports.ENV.WEBGL2)
 	        {
-	            gl = canvas.getContext('webgl2', {});
+	            gl = canvas.getContext('webgl2', testOptions);
 	        }
 
 	        if (!gl)
-	        {
-	            gl = canvas.getContext('webgl', {})
-	            || canvas.getContext('experimental-webgl', {});
+	        {	
+	            gl = canvas.getContext('webgl', testOptions)
+	            || canvas.getContext('experimental-webgl', testOptions);
 
 	            if (!gl)
 	            {
@@ -20337,6 +20337,7 @@ var PIXI = (function (exports) {
 	        }
 
 	        context = gl;
+			WebGLRenderingContext=gl;
 	    }
 
 	    return context;
@@ -20346,23 +20347,22 @@ var PIXI = (function (exports) {
 
 	function getMaxFragmentPrecision()
 	{
-	    if (!maxFragmentPrecision)
-	    {
-	        maxFragmentPrecision = exports.PRECISION.MEDIUM;
-	        var gl = getTestContext();
+	    // if (!maxFragmentPrecision)
+	    // {
+	    //     maxFragmentPrecision = exports.PRECISION.MEDIUM;
+	    //     var gl = getTestContext();
 
-	        if (gl)
-	        {
-	            if (gl.getShaderPrecisionFormat)
-	            {
-	                var shaderFragment = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
+	    //     if (gl)
+	    //     {
+	    //         if (gl.getShaderPrecisionFormat)
+	    //         {
+	    //             var shaderFragment = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
 
-	                maxFragmentPrecision = shaderFragment.precision ? exports.PRECISION.HIGH : exports.PRECISION.MEDIUM;
-	            }
-	        }
-	    }
-
-	    return maxFragmentPrecision;
+	    //             maxFragmentPrecision = shaderFragment.precision ? exports.PRECISION.HIGH : exports.PRECISION.MEDIUM;
+	    //         }
+	    //     }
+	    // }
+	    return 'highp';
 	}
 
 	/**
@@ -24329,6 +24329,15 @@ var PIXI = (function (exports) {
 	        // the options will have been modified here in the super constructor with pixi's default settings..
 	        options = this.options;
 
+			testOptions={
+				alpha: this.transparent,
+				antialias: options.antialias,
+				premultipliedAlpha: this.transparent && this.transparent !== 'notMultiplied',
+				stencil: true,
+				preserveDrawingBuffer: options.preserveDrawingBuffer,
+				powerPreference: this.options.powerPreference||'high-performance',
+			};
+			getTestContext();
 	        /**
 	         * The type of this renderer as a standardized const
 	         *
@@ -24484,7 +24493,6 @@ var PIXI = (function (exports) {
 	            .addSystem(BatchSystem, 'batch');
 
 	        this.initPlugins(Renderer.__plugins);
-
 	        /**
 	         * The options passed in to create a new WebGL context.
 	         */
@@ -24500,7 +24508,7 @@ var PIXI = (function (exports) {
 	                premultipliedAlpha: this.transparent && this.transparent !== 'notMultiplied',
 	                stencil: true,
 	                preserveDrawingBuffer: options.preserveDrawingBuffer,
-	                powerPreference: this.options.powerPreference,
+	                powerPreference: this.options.powerPreference||'high-performance',
 	            });
 	        }
 

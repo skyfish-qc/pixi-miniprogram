@@ -19,18 +19,19 @@ export function createPIXI(canvas,stageWidth) {
 	canvas.removeEventListener = function(eventName,eventFun) {
 		window.removeEventListener(eventName,eventFun);
 	}
-	if(typeof canvas.getContext2!='function') {
-		canvas.getContext2 = canvas.getContext;
-		canvas.getContext = function(t){
-			var ctx = null;
-			ctx = canvas.getContext2('webgl');
-			ctx.fillRect=function(){}
-			ctx.fillStyle='';
-			ctx.drawImage=function(){}
-			ctx.getImageData=function(){}
-			return ctx;
-		}
-	}
+	// if(typeof canvas.getContext2!='function') {
+	// 	canvas.getContext2 = canvas.getContext;
+	// 	canvas.getContext = function(t,r){
+	// 		var ctx = null;
+	// 		ctx = canvas.getContext2('webgl',r);
+	// 		console.log(22,r)
+	// 		ctx.fillRect=function(){}
+	// 		ctx.fillStyle='';
+	// 		ctx.drawImage=function(){}
+	// 		ctx.getImageData=function(){}
+	// 		return ctx;
+	// 	}
+	// }
 	var performance = performance || wx.getPerformance();
 	const requestAnimationFrame = canvas.requestAnimationFrame;
 	const HTMLVideoElement = function(){};
@@ -132,8 +133,6 @@ export function createPIXI(canvas,stageWidth) {
 		removeEventListener:function(){},
 	};
 	window.document = document;
-	window.WebGLRenderingContext = canvas.getContext2('webgl');
-	const WebGLRenderingContext = window.WebGLRenderingContext;
 	// eslint-disable-next-line
 	const atob = (a) => {
 		return _atob(a)

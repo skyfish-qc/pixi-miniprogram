@@ -41,7 +41,7 @@
   "compileType": "miniprogram",
   "libVersion": "2.16.1",
   "appid": "wx7b77cc7f7cc54bbd",
-  "projectname": "example for pixijs",
+  "projectname": "example%20for%20pixijs",
   "debugOptions": {
     "hidedInDevtools": []
   },

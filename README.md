@@ -8,6 +8,7 @@
   - 2021.12.09 使用微信小程序新版本的获取离屏canvas接口获取2d离屏canvas，减少创建PIXI时候额外传入的两个canvas，该版本需要微信小程序基础库2.16.1以上。如果要兼容旧版本的基础库，请使用v1.0版本代码。
   - 2022.03.29 添加音频支持
   - 2022.04.11 添加3.8版本spine库
+  - 2022.06.12 修改背景不能透明的问题
 ---
 
 ## 使用
@@ -44,10 +45,10 @@ Page({
             unsafeEval(PIXI);//适配PIXI里面使用的eval函数
             installSpine(PIXI);//注入Spine库
             installAnimate(PIXI);//注入Animate库
-            var renderer = PIXI.autoDetectRenderer({width:stageWidth, height:stageHeight,'transparent':false,premultipliedAlpha:true,'view':canvas});//通过view把小程序的canvas传入
+            var renderer = PIXI.autoDetectRenderer({width:stageWidth, height:stageHeight,transparent:true,premultipliedAlpha:true,'view':canvas});//通过view把小程序的canvas传入
             var stage = new PIXI.Container();
             var bg = PIXI.Sprite.from("img/bg.jpg");
-            stage.addChild(bg);
+            // stage.addChild(bg);
             bg.interactive=true;
             bg.on("touchstart",function(e){
                 console.log("touchstart",e.data.global)
