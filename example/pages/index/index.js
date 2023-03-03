@@ -23,7 +23,7 @@ Page({
             unsafeEval(PIXI);//适配PIXI里面使用的eval函数
             installSpine(PIXI);//注入Spine库
             installAnimate(PIXI);//注入Animate库
-            var renderer = PIXI.autoDetectRenderer({width:stageWidth, height:stageHeight,transparent:true,premultipliedAlpha:true,'view':canvas});//通过view把小程序的canvas传入
+            var renderer = PIXI.autoDetectRenderer({width:stageWidth, height:stageHeight,transparent:true,premultipliedAlpha:true,preserveDrawingBuffer:true,'view':canvas});//通过view把小程序的canvas传入
             var stage = new PIXI.Container();
             var bg = PIXI.Sprite.from("img/bg.jpg");
             // stage.addChild(bg);
@@ -33,6 +33,27 @@ Page({
             });
             bg.on("pointerup",function(e){
                 console.log("touchend")
+				// 获取base64图像
+                const b64Data = canvas.getContext("webgl").canvas.toDataURL()
+                const time = new Date().getTime();
+                const filePath = `${wx.env.USER_DATA_PATH}/temp_image_${time}.png`
+                // base64格式的图片要去除逗号前面的部分才能正确解码
+                const buffer = wx.base64ToArrayBuffer(b64Data.substring(b64Data.indexOf(',') + 1))
+                // 写入临时文件
+                wx.getFileSystemManager().writeFile({
+                    filePath,
+                    data: buffer,
+                    encoding: 'utf8',
+                    success: res => {
+                        console.log('保存图片：', filePath)
+                        wx.saveImageToPhotosAlbum({
+                            filePath:filePath,
+                            success(res) {
+                                console.log('已保存图片到相册')
+                            }
+                        })
+                    }
+                })
             });
             //小程序不支持加载本地fnt，json文件，所以涉及到fnt，json文件的加载需要放到网络服务器
             PIXI.Loader.shared
