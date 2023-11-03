@@ -1,5 +1,6 @@
 import {atob as _atob} from 'abab';
 import XMLHttpRequest from './XMLHttpRequest'
+import fetch from "./fetch"
 import window from './window'
 var DOMParser=require("./xmldom").DOMParser;
 import TouchEvent from "./touchEvent"
@@ -42,6 +43,7 @@ export function createPIXI(canvas,stageWidth) {
 		userAgent:"",
         isCocoonJS:true
 	};
+    window.navigator=navigator
 	const Image = function(){
 		let img= canvas.createImage();
 		img.crossOrigin="";
