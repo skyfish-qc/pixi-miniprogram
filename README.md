@@ -9,6 +9,7 @@
   - 2022.03.29 添加音频支持
   - 2022.04.11 添加3.8版本spine库
   - 2022.06.12 修改背景不能透明的问题
+  - 2023.11.03 修改pixi版本为6.3.2,旧版本5.2.1看release
 ---
 
 ## 使用
@@ -45,10 +46,10 @@ Page({
             unsafeEval(PIXI);//适配PIXI里面使用的eval函数
             installSpine(PIXI);//注入Spine库
             installAnimate(PIXI);//注入Animate库
-            var renderer = PIXI.autoDetectRenderer({width:stageWidth, height:stageHeight,transparent:true,premultipliedAlpha:true,preserveDrawingBuffer:true,'view':canvas});//通过view把小程序的canvas传入
+            var renderer = PIXI.autoDetectRenderer({width:stageWidth, height:stageHeight,backgroundAlpha:1,premultipliedAlpha:true,preserveDrawingBuffer:true,'view':canvas});//通过view把小程序的canvas传入
             var stage = new PIXI.Container();
-            var bg = PIXI.Sprite.from("img/bg.jpg");
-            // stage.addChild(bg);
+            var bg = PIXI.Sprite.from("https://raw.githubusercontent.com/skyfish-qc/imgres/master/bg.jpg");
+            stage.addChild(bg);
             bg.interactive=true;
             bg.on("touchstart",function(e){
                 console.log("touchstart",e.data.global)
@@ -85,9 +86,10 @@ Page({
                 })
                 .add("https://raw.githubusercontent.com/skyfish-qc/imgres/master/blog.fnt")
                 .add("https://raw.githubusercontent.com/skyfish-qc/imgres/master/mc.json")
-                .add('spineboypro', "https://raw.githubusercontent.com/skyfish-qc/imgres/master/spineboy-pro.json").load(function(loader, res){
+                .add('spineboypro', "https://raw.githubusercontent.com/skyfish-qc/imgres/master/spineboy-pro.json")
+                .load(function(loader, res){
                 res["sound"].data.play();//播放音乐
-                var btext = new PIXI.BitmapText('score:1234',{'font':{'name':'blog','size':'60px'},'tint':0xffff00});
+                var btext = new PIXI.BitmapText('score:1234',{'fontName':'blog','fontSize':'60px','tint':0xffff00});
                 btext.x = 40;
                 btext.y = 140;
                 stage.addChild(btext);
@@ -96,7 +98,6 @@ Page({
                     var texture = PIXI.Texture.from('pic'+(i+1)+'.png');
                     explosionTextures.push(texture);
                 }
-
                 for (i = 0; i < 2; i++) {
                     var explosion = new PIXI.AnimatedSprite(explosionTextures);
 
@@ -223,7 +224,7 @@ Page({
 
 ## 说明
 
-- 本项目当前使用的 pixi.js 版本号为 5.2.1。
+- 本项目当前使用的 pixi.js 版本号为 6.3.2。
 - 该适配版本的 PIXI 不在全局环境中，如使用 pixi.js 的其他配套类库，需要自行传入 PIXI 到类库中。可参考libs里面的pixi-spine的做法。
 - 改写PIXI.Text和PIXI.Graphics的渲染逻辑，以适配小程序的显示。
 - 视频不支持
