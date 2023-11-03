@@ -206,13 +206,12 @@ function syncUniforms(group, uniformData, ud, uv, renderer)
 
 function unsafeEval(PIXI)
 {
-    if (!PIXI || !PIXI.systems || !PIXI.systems.ShaderSystem)
+    if (!PIXI || !PIXI.ShaderSystem)
     {
         throw new Error('Unable to patch ShaderSystem, class not found.');
     }
 
-    var ref = PIXI.systems;
-    var ShaderSystem = ref.ShaderSystem;
+    var ShaderSystem = PIXI.ShaderSystem;
     var proceed = false;
 
     // Do a quick check to see if the patch is needed
