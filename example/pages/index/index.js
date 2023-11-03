@@ -27,9 +27,9 @@ Page({
             var stage = new PIXI.Container();
             var bg = PIXI.Sprite.from("https://raw.githubusercontent.com/skyfish-qc/imgres/master/bg.jpg");
             stage.addChild(bg);
-            bg.interactive=true;
-            bg.on("touchstart",function(e){
-                console.log("touchstart",e.data.global)
+            bg.eventMode = 'static';
+            bg.on("pointerdown",function(e){
+                console.log("pointerdown",e.data.global)
             });
             bg.on("pointerup",function(e){
                 console.log("touchend")
@@ -55,17 +55,12 @@ Page({
                     }
                 })
             });
+            
             //小程序不支持加载本地fnt，json文件，所以涉及到fnt，json文件的加载需要放到网络服务器
-            PIXI.Loader.shared
-                .add({
-                    name:'sound',
-                    url:'https://96.f.1ting.com/local_to_cube_202004121813/96kmp3/2021/12/08/08b_zd/01.mp3'
-                })
-                .add("https://raw.githubusercontent.com/skyfish-qc/imgres/master/blog.fnt")
-                .add("https://raw.githubusercontent.com/skyfish-qc/imgres/master/mc.json")
-                .add('spineboypro', "https://raw.githubusercontent.com/skyfish-qc/imgres/master/spineboy-pro.json")
-                .load(function(loader, res){
-                res["sound"].data.play();//播放音乐
+            PIXI.Assets.add("blog","https://raw.githubusercontent.com/skyfish-qc/imgres/master/blog.fnt")
+            PIXI.Assets.add("mc","https://raw.githubusercontent.com/skyfish-qc/imgres/master/mc.json")
+            PIXI.Assets.add('spineboypro', "https://raw.githubusercontent.com/skyfish-qc/imgres/master/spineboy-pro.json")
+            PIXI.Assets.load(["blog","mc","spineboypro"]).then(function(res){
                 var btext = new PIXI.BitmapText('score:1234',{'fontName':'blog','fontSize':'60px','tint':0xffff00});
                 btext.x = 40;
                 btext.y = 140;
@@ -83,7 +78,7 @@ Page({
                     explosion.anchor.set(0.5);
                     explosion.rotation = Math.random() * Math.PI;
                     explosion.scale.set(0.75 + Math.random() * 0.5);
-                    explosion.gotoAndPlay(Math.random() * 27);
+                    explosion.gotoAndPlay((Math.random() * 27|0));
                     stage.addChild(explosion);
                 }
                 var spineBoyPro = new PIXI.spine.Spine(res.spineboypro.spineData);
