@@ -23,10 +23,10 @@ Page({
             unsafeEval(PIXI);//适配PIXI里面使用的eval函数
             installSpine(PIXI);//注入Spine库
             installAnimate(PIXI);//注入Animate库
-            var renderer = PIXI.autoDetectRenderer({width:stageWidth, height:stageHeight,transparent:true,premultipliedAlpha:true,preserveDrawingBuffer:true,'view':canvas});//通过view把小程序的canvas传入
+            var renderer = PIXI.autoDetectRenderer({width:stageWidth, height:stageHeight,backgroundAlpha:1,premultipliedAlpha:true,preserveDrawingBuffer:true,'view':canvas});//通过view把小程序的canvas传入
             var stage = new PIXI.Container();
-            var bg = PIXI.Sprite.from("img/bg.jpg");
-            // stage.addChild(bg);
+            var bg = PIXI.Sprite.from("https://raw.githubusercontent.com/skyfish-qc/imgres/master/bg.jpg");
+            stage.addChild(bg);
             bg.interactive=true;
             bg.on("touchstart",function(e){
                 console.log("touchstart",e.data.global)
@@ -63,9 +63,10 @@ Page({
                 })
                 .add("https://raw.githubusercontent.com/skyfish-qc/imgres/master/blog.fnt")
                 .add("https://raw.githubusercontent.com/skyfish-qc/imgres/master/mc.json")
-                .add('spineboypro', "https://raw.githubusercontent.com/skyfish-qc/imgres/master/spineboy-pro.json").load(function(loader, res){
+                .add('spineboypro', "https://raw.githubusercontent.com/skyfish-qc/imgres/master/spineboy-pro.json")
+                .load(function(loader, res){
                 res["sound"].data.play();//播放音乐
-                var btext = new PIXI.BitmapText('score:1234',{'font':{'name':'blog','size':'60px'},'tint':0xffff00});
+                var btext = new PIXI.BitmapText('score:1234',{'fontName':'blog','fontSize':'60px','tint':0xffff00});
                 btext.x = 40;
                 btext.y = 140;
                 stage.addChild(btext);
@@ -74,7 +75,6 @@ Page({
                     var texture = PIXI.Texture.from('pic'+(i+1)+'.png');
                     explosionTextures.push(texture);
                 }
-
                 for (i = 0; i < 2; i++) {
                     var explosion = new PIXI.AnimatedSprite(explosionTextures);
 
