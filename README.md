@@ -221,7 +221,7 @@ Page({
 
 ## 说明
 
-- 本项目当前使用的 pixi.js 版本号为 6.3.2。
+- 本项目当前使用的 pixi.js 版本号为 7.3.2。
 - 该适配版本的 PIXI 不在全局环境中，如使用 pixi.js 的其他配套类库，需要自行传入 PIXI 到类库中。可参考libs里面的pixi-spine的做法。
 - 改写PIXI.Text和PIXI.Graphics的渲染逻辑，以适配小程序的显示。
 - 视频不支持
