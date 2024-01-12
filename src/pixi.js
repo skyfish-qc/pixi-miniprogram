@@ -17517,7 +17517,9 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     canvas(target, frame) {
       const { pixels, width, height, flipY, premultipliedAlpha } = this._rawPixels(target, frame);
       flipY && _Extract2._flipY(pixels, width, height), premultipliedAlpha && _Extract2._unpremultiplyAlpha(pixels);
-      const canvasBuffer = new CanvasRenderTarget(width, height, 1), imageData = new ImageData(new Uint8ClampedArray(pixels.buffer), width, height);
+      const canvasBuffer = new CanvasRenderTarget(width, height, 1);
+      const imageData = canvasBuffer.context.getImageData(0, 0, width, height);
+      imageData.data.set(new Uint8Array(pixels.buffer))
       return canvasBuffer.context.putImageData(imageData, 0, 0), canvasBuffer.canvas;
     }
     /**
