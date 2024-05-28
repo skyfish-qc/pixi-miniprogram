@@ -2,9 +2,12 @@ import {createPIXI} from "../../libs/pixi.miniprogram"
 var unsafeEval = require("../../libs/unsafeEval")
 var installSpine = require("../../libs/pixi-spine")
 var installAnimate = require("../../libs/pixi-animate")
+var live2d = require("../../libs/live2d.min")
+var Live2DCubismCore = require("../../libs/live2dcubismcore.min")
+var installCubism4 = require("../../libs/cubism4")
+var installPixiLive2d = require("../../libs/pixi-live2d-display")
 var myTween = require("../../libs/myTween")
 var PIXI = {};
-var app = getApp()
 Page({
     onLoad:function () {
         var info = wx.getSystemInfoSync();
@@ -23,6 +26,8 @@ Page({
             unsafeEval(PIXI);//适配PIXI里面使用的eval函数
             installSpine(PIXI);//注入Spine库
             installAnimate(PIXI);//注入Animate库
+            installCubism4(PIXI,Live2DCubismCore);
+            installPixiLive2d(PIXI,live2d,Live2DCubismCore);
             var renderer = PIXI.autoDetectRenderer({width:stageWidth, height:stageHeight,backgroundAlpha:1,premultipliedAlpha:true,preserveDrawingBuffer:true,'view':canvas});//通过view把小程序的canvas传入
             var stage = new PIXI.Container();
             var bg = PIXI.Sprite.from("https://raw.githubusercontent.com/skyfish-qc/imgres/master/bg.jpg");
@@ -33,6 +38,7 @@ Page({
             });
             bg.on("pointerup",function(e){
                 console.log("touchend")
+                return;
 				// 获取base64图像
                 const b64Data = canvas.getContext("webgl").canvas.toDataURL()
                 const time = new Date().getTime();
@@ -55,12 +61,11 @@ Page({
                     }
                 })
             });
-            
             //小程序不支持加载本地fnt，json文件，所以涉及到fnt，json文件的加载需要放到网络服务器
             PIXI.Assets.add("blog","https://raw.githubusercontent.com/skyfish-qc/imgres/master/blog.fnt")
             PIXI.Assets.add("mc","https://raw.githubusercontent.com/skyfish-qc/imgres/master/mc.json")
             PIXI.Assets.add('spineboypro', "https://raw.githubusercontent.com/skyfish-qc/imgres/master/spineboy-pro.json")
-            PIXI.Assets.load(["blog","mc","spineboypro"]).then(function(res){
+            PIXI.Assets.load(["blog","mc","spineboypro"]).then(async function(res){
                 var btext = new PIXI.BitmapText('score:1234',{'fontName':'blog','fontSize':'60px','tint':0xffff00});
                 btext.x = 40;
                 btext.y = 140;
@@ -153,7 +158,17 @@ Page({
                 graphics2.filters = [shader];//给graphics2物体进行遮罩，原来是方形的经过遮罩后变成圆形
                 //遮罩示例end
 
+                //live2d
+                const cubism4Model = "https://cdn.jsdelivr.net/gh/guansss/pixi-live2d-display/test/assets/haru/haru_greeter_t03.model3.json";
+                const model4 = await PIXI.live2d.Live2DModel.from(cubism4Model);
+                model4.scale.set(0.15);
+                model4.x = 100
+                model4.y = 400
+                stage.addChild(model4);
+
+
                 renderer.render(stage);
+                
             });
             //myTween缓动库使用示例
             /*
