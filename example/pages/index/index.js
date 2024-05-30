@@ -7,7 +7,7 @@ var Live2DCubismCore = require("../../libs/live2dcubismcore.min")
 var installCubism4 = require("../../libs/cubism4")
 var installPixiLive2d = require("../../libs/pixi-live2d-display")
 var myTween = require("../../libs/myTween")
-var PIXI = {};
+var PIXI = {dispatchEvent:function(){}};
 Page({
     onLoad:function () {
         var info = wx.getSystemInfoSync();
