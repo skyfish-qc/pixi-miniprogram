@@ -66,7 +66,7 @@ Page({
             PIXI.Assets.add("mc","https://raw.githubusercontent.com/skyfish-qc/imgres/master/mc.json")
             PIXI.Assets.add('spineboypro', "https://raw.githubusercontent.com/skyfish-qc/imgres/master/spineboy-pro.json")
             PIXI.Assets.load(["blog","mc","spineboypro"]).then(async function(res){
-                var btext = new PIXI.BitmapText('score:1234',{'fontName':'blog','fontSize':'60px','tint':0xffff00});
+                var btext = new PIXI.BitmapText('score:1234',{'fontName':'blog','fontSize':60,'tint':0xffff00});
                 btext.x = 40;
                 btext.y = 140;
                 stage.addChild(btext);
